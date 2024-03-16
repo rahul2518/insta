@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useContext } from 'react';
 import {
-  Dimensions, SafeAreaView, View, Text, StyleSheet, Button, StatusBar, FlatList, Image, TouchableOpacity
+  Dimensions, SafeAreaView, View, Text, StyleSheet, Button, StatusBar, FlatList, Image, TouchableOpacity, TouchableWithoutFeedback
 } from 'react-native';
 import Video from 'react-native-video';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
@@ -9,7 +9,7 @@ import Header from './Header';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
-import { Context } from './App';
+import { Context } from './TabView';
 
 const styles = StyleSheet.create({
 
@@ -120,7 +120,9 @@ function Feeds() {
   const onbuffer = () => {
     console.warn('buffering');
   }
-const [centerItem,setCenterItem] = useState(0);
+  const navigation = useNavigation();
+
+  const [centerItem, setCenterItem] = useState(0);
   return (
     <SafeAreaView style={{ backgroundColor: 'white' }}>
       <StatusBar backgroundColor={'white'} barStyle={'dark-content'} />
@@ -141,18 +143,14 @@ const [centerItem,setCenterItem] = useState(0);
 
             </Icon>
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => { setIndex(2) }}>
+          <TouchableOpacity onPress={() => { setIndex(2); }}>
             <Image source={require('./icons/message.png')} style={styles.mssg}></Image>
           </TouchableOpacity>
 
         </View>
       </View>
 
-      <FlatList style={{marginBottom:60}}  onScroll={(event) => {
-        const offsetY = event.nativeEvent.contentOffset.y;
-        setCenterItem(Math.floor(((offsetY + screenHeight / 2) / 650)));
-        console.log(Math.floor(((offsetY + screenHeight / 2) / 600)));
-      }} ListHeaderComponent={Header} refreshing={loading} onRefresh={onRefresh} keyExtractor={(item) => item.id} data={stories} renderItem={({ item,index }) => {
+      <FlatList style={{ marginBottom: 60 }}  ListHeaderComponent={Header} refreshing={loading} onRefresh={onRefresh} keyExtractor={(item) => item.id} data={stories} renderItem={({ item, index }) => {
         return (
 
           <View style={{ marginBottom: 35 }}>
@@ -172,11 +170,12 @@ const [centerItem,setCenterItem] = useState(0);
               </View>
 
 
+              <TouchableWithoutFeedback onPress={() => navigation.navigate('reel', { name: item.name })}>
 
 
-<Video poster={item.thumb} source={{ uri: item.reel }} onBuffer={onbuffer} paused={!(centerItem == index)} repeat={true} style={{ width: 'auto', height: 600, zIndex: -7 }} resizeMode='cover'></Video>
+                <Video poster={item.thumb} source={{ uri: item.reel }} onBuffer={onbuffer} paused={!(centerItem == index)} repeat={true} style={{ width: 'auto', height: 600, zIndex: -7 }} resizeMode='cover'></Video>
 
-
+              </TouchableWithoutFeedback>
               <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                 <View style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between', width: 100 }}>
                   <TouchableOpacity>

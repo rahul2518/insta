@@ -1,71 +1,33 @@
-import React, { useState } from 'react';
-import { View, Text, FlatList, StyleSheet } from 'react-native';
-import { TabView, SceneMap } from 'react-native-tab-view';
-import { Dimensions } from 'react-native';
-import MyTabs from './stack';
-import { Camera } from 'react-native-vision-camera';
-import camera from './camera';
-
-const BlueScreen = () => (
-  <View style={[styles.scene, { backgroundColor: 'blue' }]}>
-    <Text style={styles.text}>Blue Screen</Text>
-  </View>
-);
-
-export const Context = React.createContext({});
-
-
-
-const RedScreen = () => (
-  <View style={[styles.scene, { backgroundColor: 'red' }]}>
-    <Text style={styles.text}>Red Screen</Text>
-  </View>
-);
-
-const initialLayout = { width: Dimensions.get('window').width };
-
-const FirstRoute = () => camera;
-const SecondRoute = () => <MyTabs />;
-const ThirdRoute = () => <RedScreen />;
-
-const TabViewExample = () => {
-  const [index, setIndex] = useState(1);
-  
-  const [routes] = useState([
-    { key: 'first', title: 'Blue' },
-    { key: 'second', title: 'Counter' },
-    { key: 'third', title: 'Red' },
-  ]);
-
-  const renderScene = SceneMap({
-    first: camera,
-    second: SecondRoute,
-    third: ThirdRoute,
-  });
-
+import { View, Text } from 'react-native'
+import React, { useState } from 'react'
+import  Tab  from './TabView'
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import Reel_screen from './reel_screen';
+export const NavigationContext = React.createContext({});
+const Stack = createNativeStackNavigator();
+const App = () => {
+  const navigationRef = React.useRef<any>();   
+  const navigate = (screenName: string) => {
+    navigationRef.current?.navigate(screenName);
+  };
   return (
-    <Context.Provider value={[index, setIndex]}>
-      <TabView
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        initialLayout={initialLayout}
-        renderTabBar={() => null}
+    <NavigationContainer ref={navigationRef}>
+
+    <Stack.Navigator>
+      <Stack.Screen
+      
+        name="HomeScreen"
+        component={Tab}
+        options={ {headerShown: false }}
+        
       />
-    </Context.Provider>
-  );
-};
+      <Stack.Screen name="reel" component={Reel_screen} />
 
-const styles = StyleSheet.create({
-  scene: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  text: {
-    color: 'white',
-    fontSize: 20,
-  },
-});
+    </Stack.Navigator>
+  </NavigationContainer>
+  
+  )
+}
 
-export default TabViewExample;
+export default App

@@ -25,7 +25,7 @@ const MyTabs = () => {
 
   const [visibility, setTabVisibility] = useState(true);
   return (
-    <NavigationContainer>
+   
 
     <Tab.Navigator  initialRouteName='Home' screenOptions={{ tabBarStyle: { display: visibility ? 'flex' : 'none' }, tabBarShowLabel: false  }} >
       <Tab.Screen
@@ -86,7 +86,6 @@ const MyTabs = () => {
         }}
       />
     </Tab.Navigator>
-    </NavigationContainer>
   );
 };
 
